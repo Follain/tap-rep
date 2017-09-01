@@ -1,0 +1,110 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    # Exclude 100% auto-generated files, which we can't easily control:
+    - 'db/schema.rb'
+    - 'bin/*'
+    # Exclude directories that will not include Ruby code we care about:
+    - 'coverage/**/*'
+    - 'ember-apps/**/*'
+    - 'log/**/*'
+    - 'node_modules/**/*'
+    - 'public/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+
+Rails:
+  Enabled: true # Run extra Rails-specific cops
+
+Rails/HttpPositionalArguments:
+  # This rule was added to support Rails 5 and appears to be finding false
+  # negatives in Rails 4 - i.e. if you try to add keyword arguments to HTTP
+  # requests in a request spec it no longer works as the method does not
+  # support them.
+  #
+  # TODO: Remove this override (therefore enabling this rule) once we have
+  #       upgraded to Rails 5:
+  Enabled: false
+
+Metrics/MethodLength:
+  Exclude:
+    # Migrations can be long, but don't really need to be broken down into
+    # smaller methods:
+    - 'db/migrate/*.rb'
+  Max: 15 # Default 10 is too stringent, also Metrics/AbcSize helps keep method
+          # size in check (see https://github.com/bbatsov/rubocop/pull/1370#issuecomment-63924440)
+
+Metrics/ClassLength:
+  Exclude:
+    # Some migrations can be very long, but this is acceptable:
+    - 'db/migrate/**/*'
+
+Metrics/BlockLength:
+  Exclude:
+    # Specs and Rake files are actually excluded in the default rules, but this
+    # is ignored when run in some contexts (e.g. SublimeLinter), so we re-
+    # iterate the exclusions here:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*'
+    # Some migrations can be very long, but this is acceptable:
+    - 'db/migrate/**/*'
+    # Routes and environment configuration files can have many lines in their
+    # blocks, and this is acceptable:
+    - 'config/routes.rb'
+    - 'config/environments/*.rb'
+  ExcludedMethods:
+    # Exclude 'class_methods' found in modules using ActiveSupport::Concern:
+    - 'class_methods'
+
+Metrics/AbcSize:
+  Exclude:
+    # Migrations can be long, but don't really need to be broken down into
+    # smaller methods:
+    - 'db/migrate/*.rb'
+
+Style/BlockDelimiters:
+  Exclude:
+    - 'spec/**/*' # Specs can be tidier with multi-line {} blocks
+
+Layout/BlockEndNewline:
+  Exclude:
+    - 'spec/**/*' # Specs can be tidier without newlines on multi-line {} blocks
+
+Layout/MultilineBlockLayout:
+  Exclude:
+    - 'spec/**/*' # Specs can be tidier without newlines on multi-line {} blocks
+
+Style/NestedParenthesizedCalls:
+  Exclude:
+    - 'spec/**/*' # RSpec matchers can be clearer without nested parenthesis
+
+Style/AndOr:
+  Exclude:
+    # RSpec feature specs can be clearer with the use of 'and', e.g:
+    # `click_on 'Install' and wait_for_javascript_redirect`:
+    - 'spec/features/**/*'
+
+Style/Documentation:
+  Exclude:
+    # Application controller, helper & class don't need top-level documentation:
+    - 'app/controllers/application_controller.rb'
+    - 'app/helpers/application_helper.rb'
+    - 'config/application.rb'
+    # Migration classes don't need top-level class documentation:
+    - 'db/migrate/*.rb'
+
+Style/ZeroLengthPredicate:
+  # This rule complains about using `.length` on ActiveRecord relations, when it
+  # is a valid optimization at times when you know you will use the records from
+  # the relation so do not want to do an extract `COUNT` query that `.size`,
+  # `.count` and `.empty?` will generate:
+  Enabled: false
+
+Style/NumericPredicate:
+  # This rule insists on converting `> 0` to `.positive?` but this often doesn't
+  # read correctly in the context it is being suggested. It is also slower to
+  # use the predicate method than to do the comparison (see https://github.com/bbatsov/rubocop/issues/3633).
+  #
+  # Disabling so that the appropriate usage can be determined by the author:
+  Enabled: false

@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+
+Bundler.require
+
+require 'concurrent'
+require 'optparse'
+
+require_relative '../lib/client'
+require_relative '../lib/schema'
+require_relative '../lib/models/base'
+require_relative '../lib/models/session'
+
+config_file = nil
+state_file = nil
+verbose = false
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [options]"
+  opts.on('-c', '--config config_file', 'Set config file (json)') do |config|
+    config_file = config
+  end
+
+  opts.on('-s', '--state state_file', 'Set state file (json)') do |state|
+    state_file = state
+  end
+
+  opts.on('-h', '--help', 'Displays help') do
+    puts opts
+    exit
+  end
+
+  opts.on('-v', '--verbose', 'Enables verbose logging to STDERR') do
+    verbose = true
+  end
+end
+
+parser.parse!
+
+if config_file.nil?
+  puts parser
+  exit
+end
+
+config = JSON.parse(File.read(config_file))
+
+state = {}
+if state_file
+  state = JSON.parse(File.read(state_file))
+end
+
+
+client = TapRep::Client.new(
+  config['token'],
+  verbose,
+  Concurrent::Hash.new.merge!(state),
+  $stdout
+)
+
+TapRep::Models::Base.subclasses.each do |model|
+  client.output model.schema
+end
+
+TapRep::Models::Base.subclasses.each do |model|
+  client.process model
+end
