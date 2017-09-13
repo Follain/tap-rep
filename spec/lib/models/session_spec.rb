@@ -5,6 +5,16 @@ require './lib/models/session'
 RSpec.describe TapRep::Models::Session do
   it { is_expected.to be_a TapRep::Models::Base }
 
+  describe '#path' do
+    subject(:path) { described_class.path }
+    it { is_expected.to eq 'sessions' }
+  end
+
+  describe '#stream' do
+    subject(:stream) { described_class.stream }
+    it { is_expected.to eq 'sessions' }
+  end
+
   describe '.schema' do
     subject(:schema) { described_class.schema }
     it { is_expected.to be_a Hash }

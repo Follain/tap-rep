@@ -10,6 +10,14 @@ module TapRep
         :encrypted_id
       end
 
+      def self.path
+        'sessions'
+      end
+
+      def self.stream
+        'sessions'
+      end
+
       schema do
         string :encrypted_id, :not_null
         datetime :first_customer_message_at

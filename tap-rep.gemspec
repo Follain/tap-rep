@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.executables  = ['tap-rep']
 
-  s.add_runtime_dependency 'activesupport', '~> 5.1', '>= 5.1.1'
   s.add_runtime_dependency 'concurrent-ruby', '~> 1.0', '>= 1.0.2'
   s.add_runtime_dependency 'faraday', '~> 0.12', '>= 0.12.1'
   s.add_runtime_dependency 'faraday_middleware', '~> 0.11', '>= 0.11.0.1'

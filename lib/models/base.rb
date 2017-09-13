@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/inflector'
 require_relative '../schema'
 
 module TapRep
@@ -11,11 +10,11 @@ module TapRep
       end
 
       def self.path
-        name.demodulize.tableize
+        raise 'Implement #path in a subclass'
       end
 
       def self.stream
-        name.demodulize.tableize
+        raise 'Implement #stream in a subclass'
       end
 
       def self.key_property
