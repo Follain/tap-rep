@@ -6,4 +6,4 @@ Bundler.require
 
 require_relative '../lib/runner'
 
-TapRep::Runner.new(ARGV).perform
+TapRep::Runner.new(ARGV, stream: $stdout).perform
